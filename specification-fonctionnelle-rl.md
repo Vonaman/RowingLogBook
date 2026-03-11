@@ -272,72 +272,7 @@ Accessible depuis la liste des sorties en cours, uniquement pour les sorties don
 
 ## 6. Architecture technique
 
-### 6.1 Vue d'ensemble
 
-```
-┌─────────────────────┐     ┌──────────────────────┐
-│   App Mobile        │     │   App Web Admin      │
-│   (React Native)    │     │   (Angular)          │
-└────────┬────────────┘     └──────────┬───────────┘
-         │                             │
-         │         HTTPS / REST API    │
-         └──────────────┬──────────────┘
-                        │
-               ┌────────▼────────┐
-               │   Backend API   │
-               │  (Spring Boot)  │
-               └────────┬────────┘
-                        │
-              ┌─────────┴─────────┐
-              │                   │
-       ┌──────▼──────┐     ┌──────▼──────┐
-       │ PostgreSQL  │     │    SMTP     │
-       │ (données)   │     │  (emails)   │
-       └─────────────┘     └─────────────┘
-```
-
-### 6.2 Backend — Spring Boot
-
-- **Langage** : Java 25
-- **Framework** : Spring Boot 4
-- **API** : REST (JSON)
-- **Authentification** : Spring Security + JWT (stateless)
-- **ORM** : Spring Data JPA / Hibernate
-- **Base de données** : PostgreSQL 16
-- **Migrations** : Flyway
-- **Scheduler** : Spring `@Scheduled` pour les alertes de sécurité
-- **Emails** : Spring Mail (SMTP)
-- **Notifications in-app** : stockées en base de données, exposées via l'API REST
-- **Documentation API** : OpenAPI 3 / Swagger UI
-
-### 6.3 Application web — Angular
-
-- **Framework** : Angular 20+
-- **Langage** : TypeScript
-- **UI** : Angular Material
-- **Gestion d'état** : services RxJS
-- **Authentification** : Intercepteur HTTP pour injection du token JWT
-
-### 6.4 Application mobile — React Native
-
-- **Framework** : React Native (Expo)
-- **Langage** : TypeScript
-- **Navigation** : React Navigation
-- **Gestion d'état** : Zustand (léger, adapté au mobile)
-- **Notifications in-app** : polling régulier de l'API pour récupérer les alertes non lues
-- **Stockage local** : AsyncStorage (token JWT)
-
-### 6.5 Infrastructure (recommandation)
-
-| Composant | Solution recommandée |
-|---|---|
-| Hébergement backend | Railway / Render / VPS |
-| Base de données | PostgreSQL managé (Supabase, Railway) |
-| App mobile | Expo EAS Build (iOS + Android) |
-| App web | Vercel / Netlify |
-| Emails | Resend / SendGrid (free tier) |
-
----
 
 ## 7. Modèle de données
 
