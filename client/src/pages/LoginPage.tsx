@@ -1,13 +1,27 @@
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { login, saveAuth } from '../services/authService'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: appel API login
-    console.log({ email, password })
+    setError(null)
+    setLoading(true)
+    try {
+      const response = await login(email, password)
+      saveAuth(response)
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -125,11 +139,17 @@ export default function LoginPage() {
               </div>
 
               {/* Bouton */}
+              {error && (
+                <p className="text-red-400 text-sm text-center bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2.5">
+                  {error}
+                </p>
+              )}
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:from-blue-700 active:to-indigo-700 text-white font-semibold py-3 rounded-xl text-sm transition-all cursor-pointer shadow-lg shadow-blue-900/40 mt-2"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:from-blue-700 active:to-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl text-sm transition-all cursor-pointer shadow-lg shadow-blue-900/40 mt-2"
               >
-                Se connecter
+                {loading ? 'Connexion…' : 'Se connecter'}
               </button>
             </form>
 
@@ -142,9 +162,9 @@ export default function LoginPage() {
 
             <p className="text-center text-sm text-slate-500">
               Pas encore de compte ?{' '}
-              <a href="#" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
+              <Link to="/register" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
                 Créer un compte
-              </a>
+              </Link>
             </p>
           </div>
         </div>
