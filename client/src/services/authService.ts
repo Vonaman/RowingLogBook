@@ -48,6 +48,16 @@ export function getToken(): string | null {
   return localStorage.getItem('access_token');
 }
 
+export function getUser(): { id: string; email: string; role: string } | null {
+  const raw = localStorage.getItem('user');
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
 export function logout() {
   localStorage.removeItem('access_token');
   localStorage.removeItem('user');
