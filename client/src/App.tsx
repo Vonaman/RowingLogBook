@@ -3,7 +3,7 @@ import { getToken } from './services/authService'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
-import HomePage from './pages/HomePage'
+import DashboardPage from './pages/DashboardPage'
 import StaffPage from './pages/StaffPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -33,9 +33,7 @@ function App() {
           path="/dashboard"
           element={
             <PrivateRoute>
-              <div className="flex min-h-screen items-center justify-center bg-slate-950 text-white">
-                <p className="text-xl font-semibold">Dashboard — bientôt disponible</p>
-              </div>
+              <DashboardPage />
             </PrivateRoute>
           }
         />
