@@ -4,9 +4,22 @@ import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
+import StaffPage from './pages/StaffPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   return getToken() ? <>{children}</> : <Navigate to="/login" replace />
+}
+
+function StaffRoute({ children }: { children: React.ReactNode }) {
+  const token = getToken()
+  if (!token) {
+    return <Navigate to="/login" replace />
+  }
+
+  const rawUser = localStorage.getItem('user')
+  const role = rawUser ? (JSON.parse(rawUser) as { role?: string }).role : undefined
+
+  return role === 'STAFF' ? <>{children}</> : <Navigate to="/admin/dashboard" replace />
 }
 
 function App() {
@@ -24,6 +37,15 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/staff"
+          element={
+            <StaffRoute>
+              <StaffPage />
+            </StaffRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
